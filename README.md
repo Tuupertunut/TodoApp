@@ -12,10 +12,10 @@ Activate venv:
 source venv/bin/activate
 ```
 
-Install flask:
+Install dependencies:
 
 ```bash
-pip install flask
+pip install -r requirements.txt
 ```
 
 Run the app:
