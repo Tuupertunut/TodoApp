@@ -6,8 +6,22 @@
 </head>
 
 <body>
-    <h1>Hello world</h1>
-    <p>Hello world</p>
+    <h2>Register new user</h2>
+    <form action="/register" method="post">
+        <p>
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" />
+        </p>
+        <p>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" />
+        </p>
+        <p>
+            <label for="password_again">Repeat password:</label>
+            <input type="password" name="password_again" id="password_again" />
+        </p>
+        <input type="submit" value="Register" />
+    </form>
 </body>
 
 </html>
