@@ -85,12 +85,15 @@ def login():
 @app.route("/todos")
 def todos():
     username = session["username"]
+    query = request.args.get("query")
+    if query is None:
+        query = ""
 
     try:
         db = sqlite3.connect("database.db")
         todoitems_rows = db.execute(
-            "SELECT todoitems.id, item, todostates.id, state FROM todoitems JOIN todostates ON todoitems.todostate_id = todostates.id JOIN users ON todoitems.user_id = users.id WHERE username = ?",
-            [username],
+            "SELECT todoitems.id, item, todostates.id, state FROM todoitems JOIN todostates ON todoitems.todostate_id = todostates.id JOIN users ON todoitems.user_id = users.id WHERE username = ? AND item LIKE ?",
+            [username, "%" + query + "%"],
         ).fetchall()
         todostates_rows = db.execute("SELECT id, state FROM todostates").fetchall()
         db.close()
@@ -102,6 +105,7 @@ def todos():
     return render_template(
         "todolist.html",
         username=username,
+        query=query,
         todoitems=todoitems_rows,
         todostates=todostates_rows,
         max_todostate_id=max_todostate_id,

@@ -7,6 +7,17 @@
 
 <body>
     <p>Logged in as {{ username }}</p>
+
+    <hr />
+
+    <form action="/todos" method="get">
+        <label for="search">Search todos:</label>
+        <input type="text" name="query" value="{{ query }}" id="search" />
+        <input type="submit" value="Search" />
+    </form>
+
+    <hr />
+
     <h2>Todos</h2>
     <table>
         {% for item in todoitems %}
@@ -31,10 +42,12 @@
         {% endfor %}
     </table>
 
-    <h3>Add new todo</h3>
+    <hr />
+
     <form action="/todos/add" method="post">
+        <label for="add">Add new todo:</label>
         <p>
-            <textarea name="item"></textarea>
+            <textarea name="item" id="add"></textarea>
         </p>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <input type="submit" value="Add" />
