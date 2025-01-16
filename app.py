@@ -82,6 +82,14 @@ def login():
     return redirect("/todos")
 
 
+@app.route("/logout", methods=["POST"])
+def logout():
+    check_csrf()
+
+    session.clear()
+    return redirect("/")
+
+
 @app.route("/todos")
 def todos():
     username = session["username"]

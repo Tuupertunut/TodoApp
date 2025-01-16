@@ -6,7 +6,11 @@
 </head>
 
 <body>
-    <p>Logged in as {{ username }}</p>
+    <form action="/logout" method="post">
+        <p>Logged in as {{ username }}</p>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+        <input type="submit" value="Log out" />
+    </form>
 
     <hr />
 
