@@ -55,7 +55,7 @@ def login():
     try:
         db = sqlite3.connect("database.db")
         row = db.execute(
-            "SELECT password_hash FROM users WHERE username = ?",
+            "SELECT id, password_hash FROM users WHERE username = ?",
             [username],
         ).fetchone()
         db.close()
@@ -65,11 +65,12 @@ def login():
     if row is None:
         return render_template("index.html", login_result="Error: username not found")
 
-    [password_hash] = row
+    [user_id, password_hash] = row
 
     if not check_password_hash(password_hash, password):
         return render_template("index.html", login_result="Error: incorrect password")
 
+    session["user_id"] = user_id
     session["username"] = username
     return redirect("/todos")
 
@@ -80,7 +81,7 @@ def todos():
 
     try:
         db = sqlite3.connect("database.db")
-        rows = db.execute(
+        todoitems_rows = db.execute(
             "SELECT item, state FROM todoitems JOIN todostates ON todoitems.todostate_id = todostates.id JOIN users ON todoitems.user_id = users.id WHERE username = ?",
             [username],
         ).fetchall()
@@ -88,4 +89,28 @@ def todos():
     except Exception as error:
         return abort(repr(error))
 
-    return render_template("todolist.html", username=username, todoitems=rows)
+    return render_template(
+        "todolist.html",
+        username=username,
+        todoitems=todoitems_rows,
+    )
+
+
+@app.route("/todos/add", methods=["POST"])
+def add_todo():
+    user_id = session["user_id"]
+    item = request.form["item"]
+
+    try:
+        db = sqlite3.connect("database.db")
+        # The default todostate is the one with id 1
+        db.execute(
+            "INSERT INTO todoitems (item, user_id, todostate_id) VALUES (?, ?, 1)",
+            [item, user_id],
+        )
+        db.commit()
+        db.close()
+    except Exception as error:
+        return abort(repr(error))
+
+    return redirect("/todos")

@@ -13,6 +13,14 @@
         <li>{{ item[0] }}</li>
         {% endfor %}
     </ul>
+
+    <h3>Add new todo</h3>
+    <form action="/todos/add" method="post">
+        <p>
+            <textarea name="item"></textarea>
+        </p>
+        <input type="submit" value="Add" />
+    </form>
 </body>
 
 </html>
