@@ -2,9 +2,15 @@ from flask import Flask, render_template, request, session, redirect, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import os
+import secrets
 
 app = Flask(__name__)
 app.secret_key = os.environ["TODOAPP_SECRET_KEY"]
+
+
+def check_csrf():
+    if request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
 
 
 @app.route("/")
@@ -72,6 +78,7 @@ def login():
 
     session["user_id"] = user_id
     session["username"] = username
+    session["csrf_token"] = secrets.token_hex(16)
     return redirect("/todos")
 
 
@@ -103,6 +110,7 @@ def todos():
 
 @app.route("/todos/add", methods=["POST"])
 def add_todo():
+    check_csrf()
     user_id = session["user_id"]
     item = request.form["item"]
 
@@ -123,6 +131,7 @@ def add_todo():
 
 @app.route("/todos/evolve/<int:todo_id>", methods=["POST"])
 def evolve_todo(todo_id):
+    check_csrf()
     user_id = session["user_id"]
 
     try:

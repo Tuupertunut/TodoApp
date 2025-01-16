@@ -16,6 +16,7 @@
             {% if item[2] != max_todostate_id %}
             <td>
                 <form action="/todos/evolve/{{ item[0] }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
                     <input type="submit" value="Mark as {{ todostates[item[2]][1] }}" />
                 </form>
             </td>
@@ -29,6 +30,7 @@
         <p>
             <textarea name="item"></textarea>
         </p>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <input type="submit" value="Add" />
     </form>
 </body>
