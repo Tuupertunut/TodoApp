@@ -1,3 +1,14 @@
+## What is it
+
+This is a web app for storing and viewing todo-list items in a database. Its purpose is to pass the university course "Tietokannat ja web-ohjelmointi" as quickly as possible.
+
+## Features
+
+- Multiple users
+- Create/delete todo-list items
+- Search items by keywords
+- Mark items as "in progress" or "done"
+
 ## How to run
 
 Create venv:
