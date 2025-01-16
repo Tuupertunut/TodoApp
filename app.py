@@ -82,17 +82,22 @@ def todos():
     try:
         db = sqlite3.connect("database.db")
         todoitems_rows = db.execute(
-            "SELECT item, state FROM todoitems JOIN todostates ON todoitems.todostate_id = todostates.id JOIN users ON todoitems.user_id = users.id WHERE username = ?",
+            "SELECT todoitems.id, item, todostates.id, state FROM todoitems JOIN todostates ON todoitems.todostate_id = todostates.id JOIN users ON todoitems.user_id = users.id WHERE username = ?",
             [username],
         ).fetchall()
+        todostates_rows = db.execute("SELECT id, state FROM todostates").fetchall()
         db.close()
     except Exception as error:
         return abort(repr(error))
+
+    max_todostate_id = len(todostates_rows)
 
     return render_template(
         "todolist.html",
         username=username,
         todoitems=todoitems_rows,
+        todostates=todostates_rows,
+        max_todostate_id=max_todostate_id,
     )
 
 
@@ -107,6 +112,24 @@ def add_todo():
         db.execute(
             "INSERT INTO todoitems (item, user_id, todostate_id) VALUES (?, ?, 1)",
             [item, user_id],
+        )
+        db.commit()
+        db.close()
+    except Exception as error:
+        return abort(repr(error))
+
+    return redirect("/todos")
+
+
+@app.route("/todos/evolve/<int:todo_id>", methods=["POST"])
+def evolve_todo(todo_id):
+    user_id = session["user_id"]
+
+    try:
+        db = sqlite3.connect("database.db")
+        db.execute(
+            "UPDATE todoitems SET todostate_id = todostate_id + 1 WHERE id = ? AND user_id = ?",
+            [todo_id, user_id],
         )
         db.commit()
         db.close()
