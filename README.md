@@ -18,6 +18,12 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
+Create database:
+
+```bash
+sqlite3 database.db < schema.sql
+```
+
 Run the app:
 
 ```bash
