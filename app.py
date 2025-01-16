@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import os
@@ -54,7 +54,7 @@ def login():
 
     try:
         db = sqlite3.connect("database.db")
-        query_value = db.execute(
+        row = db.execute(
             "SELECT password_hash FROM users WHERE username = ?",
             [username],
         ).fetchone()
@@ -62,10 +62,10 @@ def login():
     except Exception as error:
         return render_template("index.html", login_result="Error: " + repr(error))
 
-    if query_value is None:
+    if row is None:
         return render_template("index.html", login_result="Error: username not found")
 
-    [password_hash] = query_value
+    [password_hash] = row
 
     if not check_password_hash(password_hash, password):
         return render_template("index.html", login_result="Error: incorrect password")
@@ -77,4 +77,15 @@ def login():
 @app.route("/todos")
 def todos():
     username = session["username"]
-    return "You are user " + username
+
+    try:
+        db = sqlite3.connect("database.db")
+        rows = db.execute(
+            "SELECT item, state FROM todoitems JOIN todostates ON todoitems.todostate_id = todostates.id JOIN users ON todoitems.user_id = users.id WHERE username = ?",
+            [username],
+        ).fetchall()
+        db.close()
+    except Exception as error:
+        return abort(repr(error))
+
+    return render_template("todolist.html", username=username, todoitems=rows)

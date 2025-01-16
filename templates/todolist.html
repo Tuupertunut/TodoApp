@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TodoApp</title>
+</head>
+
+<body>
+    <p>Logged in as {{ username }}</p>
+    <h2>Todos</h2>
+    <ul>
+        {% for item in todoitems %}
+        <li>{{ item[0] }}</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
