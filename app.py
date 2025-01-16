@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
 app = Flask(__name__)
@@ -42,4 +42,32 @@ def register():
 
     return render_template(
         "index.html", registration_result="Successfully registered user " + username
+    )
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    username = request.form["username"]
+    password = request.form["password"]
+
+    try:
+        db = sqlite3.connect("database.db")
+        query_value = db.execute(
+            "SELECT password_hash FROM users WHERE username = ?",
+            [username],
+        ).fetchone()
+        db.close()
+    except Exception as error:
+        return render_template("index.html", login_result="Error: " + repr(error))
+
+    if query_value is None:
+        return render_template("index.html", login_result="Error: username not found")
+
+    [password_hash] = query_value
+
+    if not check_password_hash(password_hash, password):
+        return render_template("index.html", login_result="Error: incorrect password")
+
+    return render_template(
+        "index.html", login_result="Successfully logged in user " + username
     )

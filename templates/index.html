@@ -6,6 +6,24 @@
 </head>
 
 <body>
+    <h2>Login</h2>
+    <form action="/login" method="post">
+        <p>
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" />
+        </p>
+        <p>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" />
+        </p>
+        <input type="submit" value="Login" />
+        {% if login_result %}
+        <p>{{ login_result }}</p>
+        {% endif %}
+    </form>
+
+    <hr />
+
     <h2>Register new user</h2>
     <form action="/register" method="post">
         <p>
