@@ -17,16 +17,29 @@ def register():
     password_again = request.form["password_again"]
 
     if password_again != password:
-        return "Error: passwords do not match"
+        return render_template(
+            "index.html", registration_result="Error: passwords do not match"
+        )
 
     password_hash = generate_password_hash(password)
 
-    db = sqlite3.connect("database.db")
-    db.execute(
-        "INSERT INTO users (username, password_hash) VALUES (?, ?)",
-        [username, password_hash],
-    )
-    db.commit()
-    db.close()
+    try:
+        db = sqlite3.connect("database.db")
+        db.execute(
+            "INSERT INTO users (username, password_hash) VALUES (?, ?)",
+            [username, password_hash],
+        )
+        db.commit()
+        db.close()
+    except sqlite3.IntegrityError:
+        return render_template(
+            "index.html", registration_result="Error: username already taken"
+        )
+    except Exception as error:
+        return render_template(
+            "index.html", registration_result="Error: " + repr(error)
+        )
 
-    return "registered user " + username + " " + password
+    return render_template(
+        "index.html", registration_result="Successfully registered user " + username
+    )

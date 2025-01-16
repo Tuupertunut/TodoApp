@@ -21,6 +21,9 @@
             <input type="password" name="password_again" id="password_again" />
         </p>
         <input type="submit" value="Register" />
+        {% if registration_result %}
+        <p>{{ registration_result }}</p>
+        {% endif %}
     </form>
 </body>
 
