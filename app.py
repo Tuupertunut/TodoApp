@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
+import os
 
 app = Flask(__name__)
+app.secret_key = os.environ["TODOAPP_SECRET_KEY"]
 
 
 @app.route("/")
@@ -68,6 +70,11 @@ def login():
     if not check_password_hash(password_hash, password):
         return render_template("index.html", login_result="Error: incorrect password")
 
-    return render_template(
-        "index.html", login_result="Successfully logged in user " + username
-    )
+    session["username"] = username
+    return redirect("/todos")
+
+
+@app.route("/todos")
+def todos():
+    username = session["username"]
+    return "You are user " + username

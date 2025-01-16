@@ -27,5 +27,5 @@ sqlite3 database.db < schema.sql
 Run the app:
 
 ```bash
-flask run
+TODOAPP_SECRET_KEY="your secret here" flask run
 ```
