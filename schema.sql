@@ -10,3 +10,9 @@ CREATE TABLE todoitems (
     todostate_id INTEGER REFERENCES todostates
 );
 CREATE TABLE todostates (id INTEGER PRIMARY KEY, state TEXT);
+CREATE TABLE tags (id INTEGER PRIMARY KEY, tag TEXT);
+CREATE TABLE todoitems_tags (
+    todoitem_id INTEGER REFERENCES todoitems,
+    tag_id INTEGER REFERENCES tags,
+    PRIMARY KEY (todoitem_id, tag_id)
+);

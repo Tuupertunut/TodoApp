@@ -27,6 +27,9 @@
         {% for item in todoitems %}
         <tr>
             <td>{{ item[1] }}</td>
+            <td>
+                <small>{{ item[4] }}</small>
+            </td>
             <td>{{ item[3] }}</td>
             {% if item[2] != max_todostate_id %}
             <td>

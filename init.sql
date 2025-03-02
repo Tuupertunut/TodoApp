@@ -7,3 +7,11 @@ INSERT INTO todostates (id, state)
 VALUES (2, 'In progress');
 INSERT INTO todostates (id, state)
 VALUES (3, 'Done');
+
+DELETE FROM tags;
+INSERT INTO tags (tag)
+VALUES ('Difficult');
+INSERT INTO tags (tag)
+VALUES ('Boring');
+INSERT INTO tags (tag)
+VALUES ('Optional');
