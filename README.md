@@ -5,9 +5,10 @@ This is a web app for storing and viewing todo-list items in a database. Its pur
 ## Features
 
 - Multiple users
-- Create/delete todo-list items
+- Create/delete/edit todo-list items
 - Search items by keywords
 - Mark items as "in progress" or "done"
+- Tag items with multiple tags
 
 ## How to run
 
