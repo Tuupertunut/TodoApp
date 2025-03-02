@@ -180,3 +180,23 @@ def delete_todo(todo_id):
         return abort(repr(error))
 
     return redirect("/todos")
+
+
+@app.route("/todos/edit/<int:todo_id>", methods=["POST"])
+def edit_todo(todo_id):
+    check_csrf()
+    user_id = session["user_id"]
+    new_item = request.form["item"]
+
+    try:
+        db = sqlite3.connect("database.db")
+        db.execute(
+            "UPDATE todoitems SET item = ? WHERE id = ? AND user_id = ?",
+            [new_item, todo_id, user_id],
+        )
+        db.commit()
+        db.close()
+    except Exception as error:
+        return abort(repr(error))
+
+    return redirect("/todos")

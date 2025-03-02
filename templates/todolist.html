@@ -42,6 +42,18 @@
                 </form>
             </td>
             {% endif %}
+            <td>
+                <details>
+                    <summary>
+                        <label for="edit">Edit</label>
+                    </summary>
+                    <form action="/todos/edit/{{ item[0] }}" method="post">
+                        <textarea name="item" id="edit">{{ item[1] }}</textarea>
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+                        <input type="submit" value="Save" />
+                    </form>
+                </details>
+            </td>
         </tr>
         {% endfor %}
     </table>
