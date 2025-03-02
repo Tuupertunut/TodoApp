@@ -31,14 +31,14 @@
                 <small>{{ item[4] }}</small>
             </td>
             <td>{{ item[3] }}</td>
-            {% if item[2] != max_todostate_id %}
             <td>
+                {% if item[2] != max_todostate_id %}
                 <form action="/todos/evolve/{{ item[0] }}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
                     <input type="submit" value="Mark as {{ todostates[item[2]][1] }}" />
                 </form>
+                {% endif %}
             </td>
-            {% endif %}
             <td>
                 <form action="/todos/delete/{{ item[0] }}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
@@ -48,10 +48,10 @@
             <td>
                 <details>
                     <summary>
-                        <label for="edit">Edit</label>
+                        <label for="edit{{ item[0] }}">Edit</label>
                     </summary>
                     <form action="/todos/edit/{{ item[0] }}" method="post">
-                        <textarea name="item" id="edit">{{ item[1] }}</textarea>
+                        <textarea name="item" id="edit{{ item[0] }}">{{ item[1] }}</textarea>
                         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
                         <input type="submit" value="Save" />
                     </form>
