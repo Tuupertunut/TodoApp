@@ -100,7 +100,10 @@ def todos():
     try:
         db = sqlite3.connect("database.db")
         todoitems_rows = db.execute(
-            "SELECT todoitems.id, item, todostates.id, state FROM todoitems JOIN todostates ON todoitems.todostate_id = todostates.id JOIN users ON todoitems.user_id = users.id WHERE username = ? AND item LIKE ?",
+            """SELECT todoitems.id, item, todostates.id, state FROM todoitems
+            JOIN todostates ON todoitems.todostate_id = todostates.id
+            JOIN users ON todoitems.user_id = users.id
+            WHERE username = ? AND item LIKE ?""",
             [username, "%" + query + "%"],
         ).fetchall()
         todostates_rows = db.execute("SELECT id, state FROM todostates").fetchall()
