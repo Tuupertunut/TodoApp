@@ -52,6 +52,11 @@
                     </summary>
                     <form action="/todos/edit/{{ item[0] }}" method="post">
                         <textarea name="item" id="edit{{ item[0] }}">{{ item[1] }}</textarea>
+                        <label>Tags:</label>
+                        {% for tag in tags %}
+                        <label for="edit{{ item[0] }}_tag{{ tag[0] }}">{{ tag[1] }}</label>
+                        <input type="checkbox" name="tags" id="edit{{ item[0] }}_tag{{ tag[0] }}" value="{{ tag[0] }}" />
+                        {% endfor %}
                         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
                         <input type="submit" value="Save" />
                     </form>

@@ -138,7 +138,7 @@ def add_todo():
     try:
         db = sqlite3.connect("database.db")
         # The default todostate is the one with id 1
-        item_id = db.execute(
+        todo_id = db.execute(
             "INSERT INTO todoitems (item, user_id, todostate_id) VALUES (?, ?, 1) RETURNING id",
             [item, user_id],
         ).fetchone()[0]
@@ -146,7 +146,7 @@ def add_todo():
         for tag_id in tags:
             db.execute(
                 "INSERT INTO todoitems_tags (todoitem_id, tag_id) VALUES (?, ?)",
-                [item_id, tag_id],
+                [todo_id, tag_id],
             )
         db.commit()
         db.close()
@@ -199,6 +199,7 @@ def edit_todo(todo_id):
     check_csrf()
     user_id = session["user_id"]
     new_item = request.form["item"]
+    new_tags = request.form.getlist("tags")
 
     try:
         db = sqlite3.connect("database.db")
@@ -206,6 +207,12 @@ def edit_todo(todo_id):
             "UPDATE todoitems SET item = ? WHERE id = ? AND user_id = ?",
             [new_item, todo_id, user_id],
         )
+        db.execute("DELETE FROM todoitems_tags WHERE todoitem_id = ?", [todo_id])
+        for tag_id in new_tags:
+            db.execute(
+                "INSERT INTO todoitems_tags (todoitem_id, tag_id) VALUES (?, ?)",
+                [todo_id, tag_id],
+            )
         db.commit()
         db.close()
     except Exception as error:
