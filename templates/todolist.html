@@ -68,6 +68,13 @@
         <p>
             <textarea name="item" id="add"></textarea>
         </p>
+        <p>
+            <label>Tags:</label>
+            {% for tag in tags %}
+            <label for="add_tag{{ tag[0] }}">{{ tag[1] }}</label>
+            <input type="checkbox" name="tags" id="add_tag{{ tag[0] }}" value="{{ tag[0] }}" />
+            {% endfor %}
+        </p>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <input type="submit" value="Add" />
     </form>

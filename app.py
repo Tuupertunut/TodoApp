@@ -110,6 +110,7 @@ def todos():
             [username, "%" + query + "%"],
         ).fetchall()
         todostates_rows = db.execute("SELECT id, state FROM todostates").fetchall()
+        tags_rows = db.execute("SELECT id, tag FROM tags").fetchall()
         db.close()
     except Exception as error:
         return abort(repr(error))
@@ -123,6 +124,7 @@ def todos():
         todoitems=todoitems_rows,
         todostates=todostates_rows,
         max_todostate_id=max_todostate_id,
+        tags=tags_rows,
     )
 
 
@@ -131,14 +133,21 @@ def add_todo():
     check_csrf()
     user_id = session["user_id"]
     item = request.form["item"]
+    tags = request.form.getlist("tags")
 
     try:
         db = sqlite3.connect("database.db")
         # The default todostate is the one with id 1
-        db.execute(
-            "INSERT INTO todoitems (item, user_id, todostate_id) VALUES (?, ?, 1)",
+        item_id = db.execute(
+            "INSERT INTO todoitems (item, user_id, todostate_id) VALUES (?, ?, 1) RETURNING id",
             [item, user_id],
-        )
+        ).fetchone()[0]
+
+        for tag_id in tags:
+            db.execute(
+                "INSERT INTO todoitems_tags (todoitem_id, tag_id) VALUES (?, ?)",
+                [item_id, tag_id],
+            )
         db.commit()
         db.close()
     except Exception as error:
