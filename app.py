@@ -203,11 +203,19 @@ def edit_todo(todo_id):
 
     try:
         db = sqlite3.connect("database.db")
-        db.execute(
-            "UPDATE todoitems SET item = ? WHERE id = ? AND user_id = ?",
+        edited_row = db.execute(
+            "UPDATE todoitems SET item = ? WHERE id = ? AND user_id = ? RETURNING id",
             [new_item, todo_id, user_id],
+        ).fetchone()
+
+        # Potential security issue if todo_id is not owned by user_id but its tags would still be edited
+        if edited_row is None:
+            return abort(403)
+
+        db.execute(
+            "DELETE FROM todoitems_tags WHERE todoitem_id = ?",
+            [todo_id],
         )
-        db.execute("DELETE FROM todoitems_tags WHERE todoitem_id = ?", [todo_id])
         for tag_id in new_tags:
             db.execute(
                 "INSERT INTO todoitems_tags (todoitem_id, tag_id) VALUES (?, ?)",
