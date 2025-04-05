@@ -23,6 +23,8 @@
     <hr />
 
     <h2>Todos</h2>
+    <p>Found {{ todoitems | length }} todos,
+        {{ todoitems | selectattr(2, "!=", max_todostate_id) | list | length }} of which are not done yet</p>
     <table>
         {% for item in todoitems %}
         <tr>
